@@ -1,4 +1,5 @@
 #include "wiimote.h"
+#include "genesis.h"
 
 #include <Wire.h> // This seems redundant, but we need to declare this
                   // dependency in the pde file or else it won't be included
@@ -42,6 +43,8 @@ byte *stream_callback(byte *buffer) {
 void setup() {
     analogReference(EXTERNAL);
         
+	initGenesis();
+
 	// Prepare wiimote communications
 	wiimote_stream = stream_callback;
 	wiimote_init();
@@ -49,8 +52,7 @@ void setup() {
 
 void loop() {
 	// update wiimote inputs from genesis inputs
-    wiiUp = 1;
-	wiiA = 1;
+        getGenesisState(&wiiUp, &wiiDown, &wiiLeft, &wiiRight, &wiiA, &wiiB, &wiiX, &wiiY);
 
 	delay(50);
 }
