@@ -33,15 +33,15 @@
 // The arduino core isn't loaded at this point, so we must force load sooner
 #include "arduino.h"
 
-int sgcPin1 = 2;
-int sgcPin2 = 3;
-int sgcPin3 = 4;
-int sgcPin4 = 5;
+int sgcPin1 = 5;
+int sgcPin2 = 6;
+int sgcPin3 = 7;
+int sgcPin4 = A3;
 
-int sgcPin6 = 6;
-int sgcPin9 = 7;
+int sgcPin6 = A2;
+int sgcPin9 = A1;
 
-int sgcPin7 = 9;
+int sgcPin7 = A0;
 
 /*
  * Initialization of the genesis controller related pins on Arduino

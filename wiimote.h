@@ -19,8 +19,6 @@
  *      A4         SDA  (green cable)
  *      A5         SCL  (yellow cable)
  *
- * It doesn't look like it's possible to power the Arduino from the Wiimote.
- *
  * Note that some online instructions for using a Wiimote extension 
  * with Arduino call for changes to twi.h.  
  * Fortunately, this modification is no longer

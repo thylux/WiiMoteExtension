@@ -1,6 +1,8 @@
 #include "wiimote.h"
 #include "genesis.h"
 
+#include <avr/power.h>
+
 #include <Wire.h> // This seems redundant, but we need to declare this
                   // dependency in the pde file or else it won't be included
                   // in the build.
@@ -31,28 +33,42 @@ byte wiiLeftAnalogY = calbuf[5]>>2;
 byte wiiRightAnalogX = calbuf[8]>>3;
 byte wiiRightAnalogY = calbuf[11]>>3;
 
-
 // Wiimote button data stream
 byte *stream_callback(byte *buffer) {
-	wiimote_write_buffer(buffer, wiiLeft, wiiRight, wiiUp, wiiDown, wiiA, wiiB, wiiX, wiiY, wiiL, wiiR,
-			wiiMinus, wiiPlus, wiiHome, wiiLeftAnalogX, wiiLeftAnalogY, wiiRightAnalogX, wiiRightAnalogY, wiiZLeft, wiiZRight);
-
-	return buffer;
+    // update wiimote inputs from genesis inputs
+    getGenesisState(&wiiUp, &wiiDown, &wiiLeft, &wiiRight, &wiiA, &wiiB, &wiiX, &wiiY);
+    
+    wiimote_write_buffer(buffer, wiiLeft, wiiRight, wiiUp, wiiDown, wiiA, wiiB, wiiX, wiiY, wiiL, wiiR,
+  	wiiMinus, wiiPlus, wiiHome, wiiLeftAnalogX, wiiLeftAnalogY, wiiRightAnalogX, wiiRightAnalogY, wiiZLeft, wiiZRight);
+    
+    return buffer;
 }
 
 void setup() {
-    analogReference(EXTERNAL);
-        
-	initGenesis();
+    // Power Saving
+    DDRB = 0x00; // Set direction to input on all pins
+    PORTB = 0xFF; // Enable pull-ups on pins
+    pinMode(2, INPUT_PULLUP);
+    pinMode(3, INPUT_PULLUP);
+    pinMode(4, INPUT_PULLUP);
+    
+    power_adc_disable();
+    power_spi_disable();
+    power_usart0_disable();
+    power_timer0_disable();
+    power_timer1_disable();
+    power_timer2_disable();
+    
+    // Genesis initialization
+    initGenesis();
 
-	// Prepare wiimote communications
-	wiimote_stream = stream_callback;
-	wiimote_init();
+    // Prepare wiimote communications
+    wiimote_stream = stream_callback;
+    wiimote_init();
 }
 
-void loop() {
-	// update wiimote inputs from genesis inputs
-        getGenesisState(&wiiUp, &wiiDown, &wiiLeft, &wiiRight, &wiiA, &wiiB, &wiiX, &wiiY);
+void loop()
+{
 
-	delay(50);
 }
+
